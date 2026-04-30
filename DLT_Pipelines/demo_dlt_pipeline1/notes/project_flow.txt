@@ -1,0 +1,5 @@
+
+order source data -----> streaming table ------> main_orders(scd1 , upsert) -----> meterialized view for analsis
+
+customer source data --------> materialized view ------> main_customer(scd2,upsert) ---->
+materialized view for analysis

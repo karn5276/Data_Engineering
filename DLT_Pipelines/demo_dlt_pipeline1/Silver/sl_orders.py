@@ -12,21 +12,21 @@ def silver_orders():
         spark.readStream.table("demo.bronze.st_tb_orders")
     )
 
-# Create final Silver table
-dp.create_streaming_table(   # .............................. 3
-    name="demo.silver.main_orders",
-    comment="Cleaned and validated orders with CDC upsert capability",
+
+dp.create_streaming_table(
+    name="demo.gold.main_orders",
+    comment="order data with SCD Type 1 Cleaned and validated orders with CDC upsert capability",
     table_properties={
         "quality": "silver",
         "layer": "silver",
         "delta.enableChangeDataFeed": "true",
         "delta.autoOptimize.optimizeWrite": "true",
         "delta.autoOptimize.autoCompact": "true",
-    },
+    }
 )
 
 dp.create_auto_cdc_flow(
-    target="demo.silver.main_orders",
+    target="demo.gold.main_orders",
     source="demo.silver.orders",
     keys=["order_id"],
     sequence_by=col("order_date"),
