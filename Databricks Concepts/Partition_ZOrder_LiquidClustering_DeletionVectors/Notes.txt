@@ -1,0 +1,33 @@
+no of numfiles = no of partition
+eg: we partition based on country and in our dataset we have 24 unique country then total 
+numFiles will be created equal to 24.
+
+
+Partition on multiple column will multiple the numFiles
+partitionBy(country)  === numFiles = 24
+partitionBy(country,role)  == 24*7 = 168  # if distinct role = 7
+
+How data store(visual representation) partitionBy(country,role)
+/path/to/table/
+│
+├── country=India/
+│   ├── role=Admin/
+│   │   └── part-00001.parquet
+│   │
+│   └── role=User/
+│       └── part-00002.parquet
+│
+└── country=USA/
+    ├── role=Admin/
+    │   └── part-00003.parquet
+    │
+    └── role=User/
+        └── part-00004.parquet
+
+
+
+
+
+
+
+
