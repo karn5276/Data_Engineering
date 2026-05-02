@@ -1,0 +1,94 @@
+
+Use cases on Notebook utility in real project
+
+✅ 1. ETL Pipeline Orchestration (Most Common)
+📌 Scenario
+
+You have:
+
+Notebook 1 → Ingest (Bronze)
+Notebook 2 → Transform (Silver)
+Notebook 3 → Aggregate (Gold)
+
+🔥 Main Notebook (Controller)
+dbutils.notebook.run("bronze_ingestion", 300)
+
+👉 Runs step by step pipeline
+
+📤 Child Notebook (example: bronze)
+dbutils.notebook.exit("Bronze Completed")
+
+📥 Capture result
+result = dbutils.notebook.run("bronze_ingestion", 300)
+print(result)
+
+
+
+
+✅ 2. Dynamic Pipeline (Parameter Passing)
+📌 Scenario
+
+Same notebook processes different tables
+
+🔥 Parent Notebook
+tables = ["customers", "orders"]
+
+for t in tables:
+    dbutils.notebook.run("process_table", 300, {"table_name": t})
+
+📤 Child Notebook
+table = dbutils.widgets.get("table_name")
+
+print(f"Processing {table}")
+
+dbutils.notebook.exit(f"{table} done")
+
+
+✅ 3. Error Handling & Retry Logic
+📌 Scenario
+
+If child notebook fails → retry
+
+try:
+    dbutils.notebook.run("critical_job", 60)
+except Exception as e:
+    print("Retrying...")
+    dbutils.notebook.run("critical_job", 60)
+
+
+
+✅ 4. Conditional Execution (Real Business Logic)
+📌 Scenario
+
+Run next step only if previous succeeds
+
+result = dbutils.notebook.run("data_validation", 120)
+
+if result == "success":
+    dbutils.notebook.run("load_gold", 300)
+else:
+    print("Validation failed")
+
+
+⚠️ Important Points
+❗ Timeout matters
+dbutils.notebook.run("sample", 60)
+
+👉 If notebook runs > 60 sec → FAIL ❌
+
+❗ Return only STRING
+dbutils.notebook.exit("success")
+
+❗ Use widgets for parameters
+dbutils.widgets.text("param", "")
+
+
+
+🔥 Real Project Summary
+Main Notebook
+   ↓
+Call Bronze → exit("success")
+   ↓
+Call Silver → exit("success")
+   ↓
+Call Gold
